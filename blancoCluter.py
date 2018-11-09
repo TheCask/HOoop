@@ -1,4 +1,4 @@
-import Blanco
+from blanco import *
 
 class Blancocluter(Blanco):
     """

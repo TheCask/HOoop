@@ -1,16 +1,34 @@
-class Blanco(object):
-    """
-    Define un blanco a ser detectado por un radar
-    """
+import datetime
 
-    def __init__(self, amplitud, tiempo_inicial, tiempo_final):
-        #TODO: completar con la inicializacion de los parametros del objeto
-        pass
+class Blanco(object):
+
+    def __init__(self, amplitud, tiempo_inicial_blanco, tiempo_final_blanco):
+        self._amplitud = amplitud
+        self._tiempo_inicial_blanco = tiempo_inicial_blanco
+        self._tiempo_final_blanco = tiempo_final_blanco
 
     def reflejar(self, senal, tiempo_inicial, tiempo_final):
 
-        #TODO ver como se encajan los tiempos del blanco y del intervalo de tiempo
-        #(interseccion de invervalos)
-        # despues aplicar los parametros del blanco sobre ese intervalo de tiempo
-        pass
+        inicio_reflejo = None
+        fin_reflejo = None
+        senal_respuesta = None
+
+        if self._tiempo_inicial_blanco < tiempo_inicial:
+            inicio_reflejo =  tiempo_inicial
+        else:
+            inicio_reflejo = self._tiempo_inicial_blanco 
         
+        if self._tiempo_final_blanco > tiempo_final:
+            fin_reflejo =  tiempo_inicial
+        else:
+            fin_reflejo = self._tiempo_final_blanco
+
+        tiempo_efectivo_reflejo = fin_reflejo - inicio_reflejo
+
+        #la senal reflejada solo se detecta si dura mas de 10 seg
+        if tiempo_efectivo_reflejo.total_seconds() > 10:
+            senal_respuesta = senal / 2 #self._amplitud
+        else:
+            senal_respuesta = senal * 0
+
+        return senal_respuesta

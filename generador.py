@@ -1,30 +1,26 @@
-"""
-Un generador de senal es el responsable de generar una senal portadora.
-
-"""
+import numpy as np
+import math
 
 class Generador(object):
 
     def __init__(self, amplitud, fase, frecuencia):
-        self.amplitud = amplitud
-        self.fase = fase
-        self.frecuencia = frecuencia
-
+        self._amplitud = amplitud
+        self._fase = fase
+        self._frecuencia = frecuencia
         #  muestras por segundo
-        self.frecuencia_muestreo = frecuencia*3
+        self._frecuencia_muestreo = frecuencia*3
 
 
     def generar(self, tiempo_inicial, tiempo_final):
 
-        import math
+        cantidad_muestras = (tiempo_final - tiempo_inicial).seconds / self._frecuencia_muestreo
 
-        cantidad_muestras = (tiempo_final - tiempo_inicial).seconds/\
-        self.frecuencia_muestreo
+        muestras = range(int(cantidad_muestras))
+        
+        #ruido blanco para agregar a la senal
+        whiteNoise = np.random.normal(size=len(muestras))
+        
+        ret = [self._amplitud*math.sin(2*(1/self._frecuencia)*i+self._fase) for i in muestras]
 
-        muestras = range(cantidad_muestras)
-        #TODO agregar un ruido blanco a la senal
-
-        ret = [self.amplitud*math.sin(2*(1/self.frecuencia)*i+self.fase) \
-        for i in muestras]
-
-        return ret
+        #se retorna la senal mas el ruido blanco
+        return ret + whiteNoise * 0.01
